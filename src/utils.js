@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
 
 export const nowUTC = () => {
-  return DateTime.local().toUTC()
+  return DateTime.utc().toISO()
 }
 
 export const nowLocal = () => {
-  return DateTime.toLocaleString()
+  return DateTime.local().toISO()
 }
 
 export const convertUTCtoLocal = (datetimeUTC) => {

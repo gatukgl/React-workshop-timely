@@ -1,6 +1,5 @@
 import React from 'react'
 import './App.css'
-import { nowUTC } from './utils'
 
 const NavBar = (props) => {
   return (
@@ -127,17 +126,6 @@ class App extends React.Component {
 
   onCategoryChange = (event) => {
     this.setState({ category: event.target.value })
-  }
-
-  onStartClicked = () => {
-    const isStarted = !this.state.isStarted
-    this.setState({ isStarted: isStarted })
-
-    if (isStarted) {
-      this.setState({ startedAt: nowUTC() })
-    } else {
-      this.setState({ endedAt: nowUTC() })
-    }
   }
 
   render() {
