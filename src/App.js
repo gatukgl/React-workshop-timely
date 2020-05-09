@@ -88,23 +88,6 @@ const TaskList = (props) => {
   )
 }
 
-/*
-const App = () => {
-  const name = 'Gatuk'
-
-  return (
-    <div className='App'>
-      <NavBar name={name} />
-      <div className='container' role='main' style={{ marginTop: '100px' }}>
-        <TaskCreator />
-        <NoTask />
-        <TaskList />
-      </div>
-    </div>
-  )
-}
-*/
-
 class App extends React.Component {
   state = {
     task: '',
