@@ -1,5 +1,6 @@
 import React from 'react'
 import './App.css'
+import { nowUTC } from './utils'
 
 const NavBar = (props) => {
   return (
@@ -114,7 +115,9 @@ class App extends React.Component {
         endedAt: '3:10:35 PM'
       }
     ],
-    isStarted: false
+    isStarted: false,
+    startedAt: '',
+    endedAt: ''
   }
 
   onTaskChange = (event) => {
@@ -127,7 +130,14 @@ class App extends React.Component {
   }
 
   onStartClicked = () => {
-    this.setState({ isStarted: !this.state.isStarted })
+    const isStarted = !this.state.isStarted
+    this.setState({ isStarted: isStarted })
+
+    if (isStarted) {
+      this.setState({ startedAt: nowUTC() })
+    } else {
+      this.setState({ endedAt: nowUTC() })
+    }
   }
 
   render() {
