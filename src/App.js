@@ -2,7 +2,6 @@ import React from 'react'
 import './App.css'
 
 const NavBar = (props) => {
-  // console.log(props)
   return (
     <nav role='navigation' className='navbar fixed-top navbar-dark bg-dark'>
       <a className='navbar-brand' href='.'>
@@ -14,7 +13,6 @@ const NavBar = (props) => {
 }
 
 const TaskCreator = (props) => {
-  console.log(props)
   return (
     <div className='row'>
       <div className='col-7'>
@@ -43,9 +41,15 @@ const TaskCreator = (props) => {
         </select>
       </div>
       <div className='col'>
-        <button type='button' className='btn btn-success btn-lg'>
-          Start
-        </button>
+        {props.isStarted ? (
+          <button type='button' className='btn btn-danger btn-lg' onClick={props.onStartClicked}>
+            Stop
+          </button>
+        ) : (
+          <button type='button' className='btn btn-success btn-lg' onClick={props.onStartClicked}>
+            Start
+          </button>
+        )}
       </div>
       <div className='col' style={{ fontSize: '1.9em' }}>
         00:00:00
@@ -109,7 +113,8 @@ class App extends React.Component {
         startedAt: '2:10:35 PM',
         endedAt: '3:10:35 PM'
       }
-    ]
+    ],
+    isStarted: false
   }
 
   onTaskChange = (event) => {
@@ -119,6 +124,10 @@ class App extends React.Component {
 
   onCategoryChange = (event) => {
     this.setState({ category: event.target.value })
+  }
+
+  onStartClicked = () => {
+    this.setState({ isStarted: !this.state.isStarted })
   }
 
   render() {
@@ -132,6 +141,8 @@ class App extends React.Component {
             onTaskChange={this.onTaskChange}
             category={this.state.category}
             onCategoryChange={this.onCategoryChange}
+            isStarted={this.state.isStarted}
+            onStartClicked={this.onStartClicked}
           />
           <NoTask />
           <TaskList allTasks={this.state.allTasks} />
