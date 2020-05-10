@@ -60,7 +60,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ```json
 {
-  "id": "18",
   "name": "Attend yoga class",
   "category": "Workout",
   "started_at": "2020-05-03T07:10:35+07:00",
