@@ -161,10 +161,9 @@ class App extends React.Component {
   }
 
   render() {
-    const name = 'Gatuk'
     return (
       <div className='App'>
-        <NavBar name={name} />
+        <NavBar />
         <div className='container' role='main' style={{ marginTop: '100px' }}>
           <TaskCreator
             taskName={this.state.task}
