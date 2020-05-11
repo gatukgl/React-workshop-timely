@@ -23,7 +23,7 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 ### Get all tasks
 
-**URL:** `http://localhost:8000/tasks`
+**URL:** `http://ec2-13-250-104-160.ap-southeast-1.compute.amazonaws.com:8000/tasks`
 
 **Method:** GET
 
@@ -52,7 +52,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### Create a task
 
-**URL:** `http://localhost:8000/tasks`
+**URL:** `http://ec2-13-250-104-160.ap-southeast-1.compute.amazonaws.com:8000/tasks`
 
 **Method:** POST
 
@@ -60,7 +60,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ```json
 {
-  "id": "18",
   "name": "Attend yoga class",
   "category": "Workout",
   "started_at": "2020-05-03T07:10:35+07:00",
@@ -84,6 +83,6 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### Remove a task
 
-**URL:** `http://localhost:8000/tasks/<id>`
+**URL:** `http://ec2-13-250-104-160.ap-southeast-1.compute.amazonaws.com:8000/tasks/<id>`
 
 **Method:** DELETE
