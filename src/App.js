@@ -74,7 +74,7 @@ const TaskList = (props) => {
       <div>
         {props.allTasks.map((task) => {
           return (
-            <div className='row m-2 py-2 border-bottom border-gray align-items-center d-flex justify-content-between'>
+            <div className='row m-2 py-2 border-bottom border-gray align-items-center d-flex justify-content-between' key={task.id}>
               <div className='col'>
                 <span>{task.name}</span>
                 <span className='ml-2 badge badge-info'>{task.category}</span>
@@ -83,7 +83,7 @@ const TaskList = (props) => {
               <div className='col'>{task.date}</div>
               <div className='col'>{`${task.startedAt} - ${task.endedAt}`}</div>
               <div className=''>
-                <button className='btn btn-danger'>Remove</button>
+                <button className='btn btn-danger' onClick={() => props.onRemoveClicked(task.id)}>Remove</button>
               </div>
             </div>
           )
@@ -109,6 +109,7 @@ class App extends React.Component {
       const tasksFromAPI = response.data
       const allTasks = tasksFromAPI.map((task) => {
         return {
+          id: task.id,
           name: task.name,
           category: task.category,
           username: task.username,
@@ -129,7 +130,7 @@ class App extends React.Component {
     this.setState({ category: event.target.value })
   }
 
-  onAddClicked = (event) => {
+  onAddClicked = () => {
     // add task to state allTasks
     // allTasks = [{name: 'task name', category: 'study'}, {}, {}]
     const currentDateTime = nowUTC()
@@ -160,6 +161,13 @@ class App extends React.Component {
     }
   }
 
+  onRemoveClicked = (taskId) => {
+    const currentAllTasks = this.state.allTasks
+    const newAllTasks = currentAllTasks.filter(task => task.id !== taskId)
+    this.setState({ allTasks: newAllTasks })
+    axios.delete(`http://ec2-13-250-104-160.ap-southeast-1.compute.amazonaws.com:8000/tasks/${taskId}`)
+  }
+
   render() {
     return (
       <div className='App'>
@@ -177,7 +185,7 @@ class App extends React.Component {
             this.state.allTasks.length < 1 ? (
               <NoTask />
             ) : (
-              <TaskList allTasks={this.state.allTasks} />
+              <TaskList allTasks={this.state.allTasks} onRemoveClicked={this.onRemoveClicked} />
             )
             // if (this.state.allTasks.length < 1) {
             //   return <NoTask />
