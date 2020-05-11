@@ -1,13 +1,17 @@
 import React from 'react'
 import './App.css'
+import { StopWatch } from './StopWatch'
+import { nowUTC } from './utils'
+import axios from 'axios'
 
 const NavBar = (props) => {
+  const username = window.sessionStorage.getItem('username')
   return (
     <nav role='navigation' className='navbar fixed-top navbar-dark bg-dark'>
       <a className='navbar-brand' href='.'>
         Timely
       </a>
-      <div style={{ color: '#fff' }}>{props.name}</div>
+      <div style={{ color: '#fff' }}>{username}</div>
     </nav>
   )
 }
@@ -41,19 +45,17 @@ const TaskCreator = (props) => {
         </select>
       </div>
       <div className='col'>
-        {props.isStarted ? (
-          <button type='button' className='btn btn-danger btn-lg' onClick={props.onStartClicked}>
+        {props.isStarted === true ? (
+          <button type='button' className='btn btn-danger btn-lg' onClick={props.onAddClicked}>
             Stop
           </button>
         ) : (
-          <button type='button' className='btn btn-success btn-lg' onClick={props.onStartClicked}>
+          <button type='button' className='btn btn-success btn-lg' onClick={props.onAddClicked}>
             Start
           </button>
         )}
       </div>
-      <div className='col' style={{ fontSize: '1.9em' }}>
-        00:00:00
-      </div>
+      <StopWatch isWatchStarted={props.isStarted} />
     </div>
   )
 }
@@ -71,7 +73,6 @@ const TaskList = (props) => {
     <div className='my-3 bg-white rounded shadow-sm'>
       <div>
         {props.allTasks.map((task) => {
-          console.log(task)
           return (
             <div className='row m-2 py-2 border-bottom border-gray align-items-center d-flex justify-content-between'>
               <div className='col'>
@@ -96,36 +97,67 @@ class App extends React.Component {
   state = {
     task: '',
     category: 'study',
-    allTasks: [
-      {
-        name: 'Task 1',
-        category: 'Workshop',
-        username: 'Gatuk',
-        date: 'Saturday, May 9, 2020',
-        startedAt: '2:10:35 PM',
-        endedAt: '3:10:35 PM'
-      },
-      {
-        name: 'Task 2',
-        category: 'Study',
-        username: 'Gatuk',
-        date: 'Saturday, May 9, 2020',
-        startedAt: '2:10:35 PM',
-        endedAt: '3:10:35 PM'
-      }
-    ],
+    allTasks: [],
     isStarted: false,
     startedAt: '',
     endedAt: ''
   }
 
+  componentDidMount() {
+    axios.get('http://ec2-13-250-104-160.ap-southeast-1.compute.amazonaws.com:8000/tasks')
+    .then((response) => {
+      const tasksFromAPI = response.data
+      const allTasks = tasksFromAPI.map((task) => {
+        return {
+          name: task.name,
+          category: task.category,
+          username: task.username,
+          startedAt: task.started_at,
+          endedAt: task.ended_at
+        }
+      })
+      this.setState({ allTasks: allTasks })
+    })
+    // this.setState({allTasks: [{name: 'name', category:'category, username: 'username', startedAt: '', endedAt: ''}]}
+  }
+
   onTaskChange = (event) => {
-    console.log(event.target.value)
     this.setState({ task: event.target.value })
   }
 
   onCategoryChange = (event) => {
     this.setState({ category: event.target.value })
+  }
+
+  onAddClicked = (event) => {
+    // add task to state allTasks
+    // allTasks = [{name: 'task name', category: 'study'}, {}, {}]
+    const currentDateTime = nowUTC()
+    const newTask = {
+      name: this.state.task,
+      category: this.state.category,
+      startedAt: this.state.startedAt,
+      endedAt: currentDateTime
+    }
+
+    const isStarted = !this.state.isStarted
+    this.setState({ isStarted: isStarted })
+
+    if (isStarted === true) {
+      this.setState({ startedAt: currentDateTime })
+    } else {
+      const newAllTasks = this.state.allTasks.concat(newTask)
+      this.setState({ allTasks: newAllTasks })
+      this.setState({ endedAt: currentDateTime })
+
+      axios.post('http://ec2-13-250-104-160.ap-southeast-1.compute.amazonaws.com:8000/tasks',{
+        name: this.state.task,
+        category: this.state.category,
+        started_at: this.state.startedAt,
+        ended_at: currentDateTime,
+        username: window.sessionStorage.getItem('username')
+      })
+    }
   }
 
   render() {
@@ -139,11 +171,21 @@ class App extends React.Component {
             onTaskChange={this.onTaskChange}
             category={this.state.category}
             onCategoryChange={this.onCategoryChange}
+            onAddClicked={this.onAddClicked}
             isStarted={this.state.isStarted}
-            onStartClicked={this.onStartClicked}
           />
-          <NoTask />
-          <TaskList allTasks={this.state.allTasks} />
+          {
+            this.state.allTasks.length < 1 ? (
+              <NoTask />
+            ) : (
+              <TaskList allTasks={this.state.allTasks} />
+            )
+            // if (this.state.allTasks.length < 1) {
+            //   return <NoTask />
+            // } else {
+            //   return <TaskList allTasks={this.state.allTasks}
+            // }
+          }
         </div>
       </div>
     )
