@@ -1,5 +1,4 @@
 import React from 'react'
-import './App.css'
 import { StopWatch } from './StopWatch'
 import { nowUTC, convertUTCtoLocal } from './utils'
 import axios from 'axios'
